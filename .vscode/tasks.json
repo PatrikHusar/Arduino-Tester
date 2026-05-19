@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "my run",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Arduino: Build",
+                "Arduino: Upload",
+                "Arduino: Monitor"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
