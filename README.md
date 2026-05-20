@@ -4,6 +4,7 @@ Currently can measure:
  - Diode
 
    ![](/images/diodeScheme.png)
+   ![](/images/diodeTable.png)
  - Transistor
 
    ![](/images/transistorScheme.png)
