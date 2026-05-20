@@ -1,18 +1,17 @@
 #include <Arduino.h>
+#include "components/baseComponent.h"
+#include "components/diode.h"
 
-// put function declarations here:
-int myFunction(int, int);
+Diode diode; 
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+void setup()
+{
+  Serial.begin(9600);
+  Serial.println("starting tester...");
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
+  Serial.println(diode.testDiode(2, 3, A0, 5.0));
+  delay(1000);
 }
