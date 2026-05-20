@@ -6,11 +6,10 @@
 
 enum DiodeStatus
 {
-    EMPTY,
-    INSERTED_A_C,
-    INSERTED_C_A,
-    SHORT_CIRCUITED,
-    NOT_WORKING
+    DIODE_NOT_INSERTED,
+    DIODE_INSERTED_A_C,
+    DIODE_INSERTED_C_A,
+    DIODE_NOT_WORKING
 };
 
 class Diode : public baseComponent
