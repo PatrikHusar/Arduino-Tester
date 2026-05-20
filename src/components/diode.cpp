@@ -12,21 +12,21 @@ DiodeStatus Diode::testDiode(uint8_t digiPin1, uint8_t digiPin2, uint8_t analogP
         voltageLowHigh == 0)
     {
         // diode not inserted
-        return EMPTY;
+        return DIODE_NOT_INSERTED;
     }
     else if (voltageHighLow > diodeForwardVoltage - tolerance &&
             voltageHighLow < diodeForwardVoltage + tolerance &&
             voltageLowHigh == 0)
     {
         // diode inserted in anode-cathode direction
-        return INSERTED_A_C;
+        return DIODE_INSERTED_A_C;
     }
     else if ((voltageHighLow == VCC) &&
             (voltageLowHigh > VCC - diodeForwardVoltage - tolerance) &&
             (voltageLowHigh < VCC - diodeForwardVoltage + tolerance))
     {
         // diode inserted in cathode-anode direction
-        return INSERTED_C_A;
+        return DIODE_INSERTED_C_A;
     }
     // else if (voltageHighLow == 0 &&
     //         voltageLowHigh == VCC)
@@ -34,7 +34,7 @@ DiodeStatus Diode::testDiode(uint8_t digiPin1, uint8_t digiPin2, uint8_t analogP
     //     // short circuited
     //     return SHORT_CIRCUITED;
     // }
-    return NOT_WORKING;
+    return DIODE_NOT_WORKING;
 }
 
 void Diode::getVoltages(uint8_t analogPin, uint8_t digiPin1, uint8_t digiPin2, float VCC, float &voltageHighLow, float &voltageLowHigh)
