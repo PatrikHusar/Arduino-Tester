@@ -2,6 +2,8 @@ Hello, Arduino Tester is device, which can measure components and evaulate statu
 
 Currently can measure: 
  - Diode
+
    ![](/images/diodeScheme.png)
  - Transistor
+
    ![](/images/transistorScheme.png)
