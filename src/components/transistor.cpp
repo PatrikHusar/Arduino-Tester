@@ -5,18 +5,18 @@ transistorStatus Transistor::testTransistor(uint8_t digiPin1, uint8_t emmiterPin
     Diode diode;
     DiodeStatus statusPin1Emmiter = diode.testDiode(digiPin1, emmiterPin, analogPin, VCC, tolerance, transistorTOpenVoltageDrop);
     DiodeStatus statusPin3Emmiter = diode.testDiode(digiPin3, emmiterPin, analogPin, VCC, tolerance, transistorTOpenVoltageDrop);
-    if (statusPin1Emmiter == INSERTED_A_C &&
-        statusPin3Emmiter == INSERTED_A_C)
+    if (statusPin1Emmiter == DIODE_INSERTED_A_C &&
+        statusPin3Emmiter == DIODE_INSERTED_A_C)
     {
         return TRANSISTOR_INSERTED_PNP;
     }
-    else if (statusPin1Emmiter == INSERTED_C_A &&
-             statusPin3Emmiter == INSERTED_C_A)
+    else if (statusPin1Emmiter == DIODE_INSERTED_C_A &&
+             statusPin3Emmiter == DIODE_INSERTED_C_A)
     {
         return TRANSISTOR_INSERTED_NPN;
     }
-    else if (statusPin1Emmiter == EMPTY &&
-             statusPin3Emmiter == EMPTY)
+    else if (statusPin1Emmiter == DIODE_NOT_INSERTED &&
+             statusPin3Emmiter == DIODE_NOT_INSERTED)
     {
         return TRANSISTOR_NOT_INSERTED;
     }
@@ -24,22 +24,4 @@ transistorStatus Transistor::testTransistor(uint8_t digiPin1, uint8_t emmiterPin
     {
         return TRANSISTOR_NOT_WORKING;
     }
-
-
-
-
-
-
-    setPinMode(digiPin1, OUTPUT, emmiterPin, OUTPUT, digiPin3, OUTPUT);
-    setPinValues(digiPin1, HIGH, emmiterPin, LOW, digiPin3, LOW);
-    delay(50);
-    float voltageBase = readAnalogPin(analogPin, VCC);
-    setPinValues(digiPin1, LOW, emmiterPin, HIGH, digiPin3, LOW);
-    delay(50);
-    float voltageCollector = readAnalogPin(analogPin, VCC);
-    setPinValues(digiPin1, LOW, emmiterPin, LOW, digiPin3, HIGH);
-    delay(50);
-    float voltageEmitter = readAnalogPin(analogPin, VCC);
-    Serial.println("voltages: " + String(voltageBase) + ", " + String(voltageCollector) + ", " + String(voltageEmitter));
-    return TRANSISTOR_NOT_WORKING;
 }
