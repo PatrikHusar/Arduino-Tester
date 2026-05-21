@@ -13,3 +13,4 @@ Currently can measure:
  - Resistor
 
    ![](/images/resistorScheme.png)
+   ![](/images/resistorTable.png)
