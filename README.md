@@ -9,3 +9,7 @@ Currently can measure:
 
    ![](/images/transistorScheme.png)
    ![](/images/transistorTable.png)
+
+ - Resistor
+
+   ![](/images/resistorScheme.png)
