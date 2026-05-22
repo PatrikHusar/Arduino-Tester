@@ -1,15 +1,19 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "my run",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Arduino: Build",
-                "Arduino: Upload",
-                "Arduino: Monitor"
-            ],
-            "problemMatcher": []
-        }
-    ]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PlatformIO: Build -> Upload -> Monitor",
+      "type": "shell",
+      "command": "~/.platformio/penv/bin/pio run --target upload && ~/.platformio/penv/bin/pio device monitor",
+      "problemMatcher": ["$platformio"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
 }
