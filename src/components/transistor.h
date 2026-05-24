@@ -18,8 +18,12 @@ class Transistor : public baseComponent
     private:
         void measurePins(uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3, bool pin1Value, bool pin2Value, bool pin3Value, uint8_t analogPin1, uint8_t analogPin2, uint8_t analogPin3, float VCC, float &voltage1, float &voltage2, float &voltage3);
         void findBaseAndGetTransistorType(uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3, uint8_t analogPin1, uint8_t analogPin2, uint8_t analogPin3, float VCC, float tolerance, float transistorTOpenVoltageDrop, uint8_t &basePin, uint8_t &baseAnalogPin, uint8_t &otherPin1, uint8_t &otherPin2, transistorStatus &transistorType);
-        transistorStatus getTransistorType(uint8_t otherPin1, uint8_t otherPin2, uint8_t basePin, uint8_t baseAnalogPin, float VCC, float tolerance, float transistorTOpenVoltageDrop);
         void findEmmiterAndCollector(uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3, uint8_t basePin, uint8_t baseAnalogPin, float VCC, float tolerance, float transistorTOpenVoltageDrop, transistorStatus transistorType, uint8_t &emmiterPin, uint8_t &collectorPin);
-        void calcNPNTransistorBase(float VCC, float voltage13, float voltage21, float voltage32, float voltage11, float voltage12, float voltage22, float voltage23, float voltage31, float voltage33, float tolerance, float transistorTOpenVoltageDrop, uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3, uint8_t analogPin1, uint8_t analogPin2, uint8_t analogPin3, uint8_t &basePin, uint8_t &baseAnalogPin, uint8_t &otherPin1, uint8_t &otherPin2, transistorStatus &transistorType);
+        struct stepResult {
+        uint8_t countHigh = 0;
+        uint8_t countLow = 0;
+        int8_t lowPinIndex = -1;
+        bool isPinHigh[3] = {false, false, false};
+    };
 };
 #endif
