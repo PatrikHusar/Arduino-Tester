@@ -7,6 +7,8 @@
 Diode diode;
 Transistor transistor;
 Resistor resistor;
+uint8_t pins[3] = {2, 3, 4};
+uint8_t analogPins[3] = {A2, A1, A0};
 
 void setup()
 {
@@ -17,7 +19,7 @@ void setup()
 void loop()
 {
   // Serial.println(resistor.testResistor(2, 3, A0, 5.0, 1000.0));
-  Serial.println(transistor.testTransistor(2, 3, 4, A2, A1, A0, 5.0));
+  Serial.println(transistor.testTransistor(pins, analogPins, 5.0));
   // Serial.println(diode.testDiode(2, 3, A0, 5.0));
   delay(1000);
 }

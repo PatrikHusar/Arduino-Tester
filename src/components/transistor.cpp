@@ -1,44 +1,23 @@
 #include "transistor.h"
 
-transistorStatus Transistor::testTransistor(uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3,
-                                            uint8_t analogPin1, uint8_t analogPin2, uint8_t analogPin3,
-                                            float VCC, float tolerance, float transistorTOpenVoltageDrop)
+transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, float tolerance)
 {
-    uint8_t basePin, baseAnalogPin, otherPin1, otherPin2, emmiterPin, collectorPin;
     transistorStatus transistorType;
-    findBaseAndGetTransistorType(digiPin1, digiPin2, digiPin3,
-                                analogPin1, analogPin2, analogPin3,
-                                VCC, tolerance, transistorTOpenVoltageDrop,
-                                basePin, baseAnalogPin, otherPin1, otherPin2, transistorType);
-
-    return TRANSISTOR_NOT_INSERTED;
-}
-
-void Transistor::findBaseAndGetTransistorType(uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3, 
-                                              uint8_t analogPin1, uint8_t analogPin2, uint8_t analogPin3, 
-                                              float VCC, float tolerance, float transistorTOpenVoltageDrop, 
-                                              uint8_t &basePin, uint8_t &baseAnalogPin, 
-                                              uint8_t &otherPin1, uint8_t &otherPin2, 
-                                              transistorStatus &transistorType)
-{
-    setPinMode(digiPin1, OUTPUT, digiPin2, OUTPUT, digiPin3, OUTPUT);
-    float v11, v12, v13;
-    float v21, v22, v23;
-    float v31, v32, v33;
-
-    measurePins(digiPin1, digiPin2, digiPin3, HIGH, HIGH, LOW,  analogPin1, analogPin2, analogPin3, VCC, v11, v12, v13);
-    measurePins(digiPin1, digiPin2, digiPin3, LOW,  HIGH, HIGH, analogPin1, analogPin2, analogPin3, VCC, v21, v22, v23);
-    measurePins(digiPin1, digiPin2, digiPin3, HIGH, LOW,  HIGH, analogPin1, analogPin2, analogPin3, VCC, v31, v32, v33);
-
-    uint8_t dPins[3] = {digiPin1, digiPin2, digiPin3};
-    uint8_t aPins[3] = {analogPin1, analogPin2, analogPin3};
-    float values[3][3] =
-    {
-        {v11, v12, v13},
-        {v21, v22, v23},
-        {v31, v32, v33}
-    };
-
+    Transistor::pinPos transistorElectrodesPos[3];
+    setPinMode(dPins[0], OUTPUT, dPins[1], OUTPUT, dPins[2], OUTPUT);
+    float v1[3], v2[3], v3[3];
+    float pinSet1[3] = {HIGH, HIGH, LOW};
+    float pinSet2[3] = {LOW, HIGH, HIGH};
+    float pinSet3[3] = {HIGH, LOW, HIGH};
+    measurePins(dPins, aPins, pinSet1, VCC, v1);
+    measurePins(dPins, aPins, pinSet2, VCC, v2);
+    measurePins(dPins, aPins, pinSet3, VCC, v3);
+    float values[3][3];
+    for (int i = 0; i < 3; ++i) {
+        values[0][i] = v1[i];
+        values[1][i] = v2[i];
+        values[2][i] = v3[i];
+    }
     stepResult stepResults[3];
     for (uint8_t row = 0; row < 3; row++)
     {
@@ -56,7 +35,6 @@ void Transistor::findBaseAndGetTransistorType(uint8_t digiPin1, uint8_t digiPin2
             }
         }
     }
-
     uint8_t npnMatches = 0;
     int8_t npnBaseIndex = -1;
     for (uint8_t row = 0; row < 3; row++)
@@ -67,7 +45,6 @@ void Transistor::findBaseAndGetTransistorType(uint8_t digiPin1, uint8_t digiPin2
             npnBaseIndex = stepResults[row].lowPinIndex;
         }
     }
-
     uint8_t pnpMatches = 0;
     int8_t pnpBaseIndex = -1;
     for (uint8_t column = 0; column < 3; column++)
@@ -82,42 +59,90 @@ void Transistor::findBaseAndGetTransistorType(uint8_t digiPin1, uint8_t digiPin2
             pnpBaseIndex = column;
         }
     }
-
-    if (npnMatches == 1 && pnpMatches == 0)
+    if (npnMatches == 1)
     {
         transistorType = TRANSISTOR_INSERTED_NPN;
-        basePin = dPins[npnBaseIndex];
-        baseAnalogPin = aPins[npnBaseIndex];
-        otherPin1 = dPins[(npnBaseIndex + 1) % 3];
-        otherPin2 = dPins[(npnBaseIndex + 2) % 3];
+        transistorElectrodesPos[0].pin = dPins[npnBaseIndex];
+        transistorElectrodesPos[0].name = "Base";
+
+        uint8_t idx1 = (npnBaseIndex + 1) % 3;
+        uint8_t idx2 = (npnBaseIndex + 2) % 3;
+
+        setPinMode(dPins[idx1], OUTPUT, dPins[idx2], OUTPUT, dPins[npnBaseIndex], INPUT_PULLUP);
+        setPinValues(dPins[idx1], HIGH, dPins[idx2], LOW);
+        delay(50);
+        float voltageAtIdx2 = readAnalogPin(aPins[npnBaseIndex], VCC);
+
+        setPinValues(dPins[idx1], LOW, dPins[idx2], HIGH);
+        delay(50);
+        float voltageAtIdx1 = readAnalogPin(aPins[npnBaseIndex], VCC);
+        if (voltageAtIdx1 < voltageAtIdx2)
+        {
+            transistorElectrodesPos[1].pin = dPins[idx1];
+            transistorElectrodesPos[1].name = "Collector";
+            transistorElectrodesPos[2].pin = dPins[idx2];
+            transistorElectrodesPos[2].name = "Emitter";
+        }
+        else
+        {
+            transistorElectrodesPos[1].pin = dPins[idx2];
+            transistorElectrodesPos[1].name = "Collector";
+            transistorElectrodesPos[2].pin = dPins[idx1];
+            transistorElectrodesPos[2].name = "Emitter";
+        }
     }
-    else if (pnpMatches == 1 && npnMatches == 2)
+    else if (pnpMatches == 1 && npnMatches != 1)
     {
         transistorType = TRANSISTOR_INSERTED_PNP;
-        basePin = dPins[pnpBaseIndex];
-        baseAnalogPin = aPins[pnpBaseIndex];
-        otherPin1 = dPins[(pnpBaseIndex + 1) % 3];
-        otherPin2 = dPins[(pnpBaseIndex + 2) % 3];
+        transistorElectrodesPos[0].pin = dPins[pnpBaseIndex];
+        transistorElectrodesPos[0].name = "Base";
+
+        uint8_t idx1 = (pnpBaseIndex + 1) % 3;
+        uint8_t idx2 = (pnpBaseIndex + 2) % 3;
+
+        setPinMode(dPins[idx2], OUTPUT, dPins[pnpBaseIndex], OUTPUT, dPins[idx1], INPUT_PULLUP);
+        setPinValues(dPins[idx2], LOW, dPins[pnpBaseIndex], LOW);
+        delay(100);
+        float voltageAtIdx1 = readAnalogPin(aPins[idx1], VCC);
+
+        setPinMode(dPins[idx1], OUTPUT, dPins[pnpBaseIndex], OUTPUT, dPins[idx2], INPUT_PULLUP);
+        setPinValues(dPins[idx1], LOW, dPins[pnpBaseIndex], LOW);
+        delay(100);
+        float voltageAtIdx2 = readAnalogPin(aPins[idx2], VCC);
+
+        if (voltageAtIdx1 < voltageAtIdx2) {
+            transistorElectrodesPos[1].pin = dPins[idx1];
+            transistorElectrodesPos[1].name = "Emitter";
+            transistorElectrodesPos[2].pin = dPins[idx2];
+            transistorElectrodesPos[2].name = "Collector";
+        } else {
+            transistorElectrodesPos[1].pin = dPins[idx2];
+            transistorElectrodesPos[1].name = "Emitter";
+            transistorElectrodesPos[2].pin = dPins[idx1];
+            transistorElectrodesPos[2].name = "Collector";
+        }
+    }
+    else if (npnMatches == 3)
+    {
+        transistorType = TRANSISTOR_NOT_INSERTED;
     }
     else
     {
         transistorType = TRANSISTOR_NOT_WORKING;
     }
+
+    Serial.println(transistorElectrodesPos[0].name + ": " + String(transistorElectrodesPos[0].pin) + ", " +
+                    transistorElectrodesPos[1].name + ": " + String(transistorElectrodesPos[1].pin) + ", " +
+                    transistorElectrodesPos[2].name + ": " + String(transistorElectrodesPos[2].pin));
+
+    return transistorType;
 }
-void Transistor::measurePins(uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3,
-                            bool pin1Value, bool pin2Value, bool pin3Value,
-                            uint8_t analogPin1, uint8_t analogPin2, uint8_t analogPin3,
-                            float VCC, float &voltage1, float &voltage2, float &voltage3)
+
+void Transistor::measurePins(uint8_t dPins[3], uint8_t aPins[3], float pinValues[3], float VCC, float voltages[3])
 {
-    setPinValues(digiPin1, pin1Value, digiPin2, pin2Value, digiPin3, pin3Value);
+    setPinValues(dPins[0], pinValues[0], dPins[1], pinValues[1], dPins[2], pinValues[2]);
     delay(50);
-    voltage1 = readAnalogPin(analogPin1, VCC);
-    voltage2 = readAnalogPin(analogPin2, VCC);
-    voltage3 = readAnalogPin(analogPin3, VCC);
-    Serial.println("voltages: " + String(voltage1) + ", " + String(voltage2) + ", " + String(voltage3));
-    Serial.println("values: " + String(pin1Value) + ", " + String(pin2Value) + ", " + String(pin3Value));
-}
-void Transistor::findEmmiterAndCollector(uint8_t digiPin1, uint8_t digiPin2, uint8_t digiPin3, uint8_t basePin, uint8_t baseAnalogPin, float VCC, float tolerance, float transistorTOpenVoltageDrop, transistorStatus transistorType, uint8_t &emmiterPin, uint8_t &collectorPin)
-{
-    
+    voltages[0] = readAnalogPin(aPins[0], VCC);
+    voltages[1] = readAnalogPin(aPins[1], VCC);
+    voltages[2] = readAnalogPin(aPins[2], VCC);
 }
