@@ -1,6 +1,6 @@
 #include "transistor.h"
 
-transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, float tolerance)
+transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, Transistor::pinPos transistorElectrodesPos[3], float tolerance)
 {
     transistorStatus transistorType;
     Transistor::pinPos transistorElectrodesPos[3];

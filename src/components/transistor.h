@@ -14,12 +14,12 @@ enum transistorStatus
 class Transistor : public baseComponent
 {
     public:
-        transistorStatus testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, float tolerance = 0.1);
-        struct pinPos
-        {
-            int8_t pin = -1;
-            String name = "";
-        };
+    struct pinPos
+    {
+        int8_t pin = -1;
+        String name = "";
+    };
+    transistorStatus testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, Transistor::pinPos transistorElectrodesPos[3], float tolerance = 0.1);
     private:
         void measurePins(uint8_t dPins[3], uint8_t aPins[3], float pinValues[3], float VCC, float voltages[3]);
         struct stepResult

@@ -29,6 +29,7 @@ const char* diodeStatusToText(diodeStatus status) {
     case DIODE_NOT_WORKING: return "not working";
     default: return "unknown status";}
 }
+Transistor::pinPos transistorElectrodesPos[3];
 
 void setup()
 {
@@ -38,7 +39,7 @@ void setup()
 
 void loop()
 {
-  String text = transistorStatusToText(transistor.testTransistor(pins, analogPins, VCC));
+  String text = transistorStatusToText(transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos));
   display.firstPage();
   do
   {
@@ -48,7 +49,6 @@ void loop()
     display.setPrintPos(1, 30);
     display.print(text);
     display.setPrintPos(1, 50);
-    // display.print("pins" + )
   // Serial.println(resistor.testResistor(2, 3, A0, VCC, 1000.0));
   // Serial.println(diode.testDiode(2, 3, A0, VCC));
   }
