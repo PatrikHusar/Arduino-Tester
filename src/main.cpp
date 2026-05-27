@@ -4,10 +4,12 @@
 #include "components/diode.h"
 #include "components/transistor.h"
 #include "components/resistor.h"
+#include "utilities/switchComponent.h"
 
 Diode diode;
 Transistor transistor;
 Resistor resistor;
+SwitchComponent switchComponent;
 uint8_t pins[3] = {2, 3, 4};
 uint8_t analogPins[3] = {A2, A1, A0};
 float VCC = 5.0;
@@ -38,10 +40,25 @@ void setup()
   Serial.println("starting tester...");
 }
 
+String text1;
+String text2;
 void loop()
 {
-  String text = transistorStatusToText(transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos));
-  String pinsText = transistorElectrodesPos[0].name + " : " + transistorElectrodesPos[1].name + " : " + transistorElectrodesPos[2].name;
+  uint8_t mode = switchComponent.isPressed(buttonPin, 2);
+  if (mode == 0) 
+  {
+  text1 = "type: " + String(transistorStatusToText(transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos)));
+  text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " + String(transistorElectrodesPos[1].name) + " : " + String(transistorElectrodesPos[2].name);
+  }
+  else if (mode == 1)
+  {
+    text1 = "type: " + String(diodeStatusToText(diode.testDiode(pins[0], pins[1], analogPins[0], VCC)));
+  }
+  else if (mode == 2)
+  {
+    float resistorValue = resistor.testResistor(pins[0], pins[1], analogPins[0], VCC, 1000.0);
+    text1 = "resistance: " + String(resistorValue) + " Ohms";
+  }
   display.firstPage();
   do
   {
@@ -49,13 +66,15 @@ void loop()
     display.setPrintPos(1, 10);
     display.print("TRANSISTOR TESTING");
     display.setPrintPos(1, 30);
-    display.print("type: " + text);
-    display.setPrintPos(1, 50);
-    display.print("pins: " + pinsText);
+    display.print(text1);
+    if (mode == 0)
+    {
+      display.setPrintPos(1, 50);
+      display.print(text2);
+    }
   // Serial.println(resistor.testResistor(2, 3, A0, VCC, 1000.0));
-  // Serial.println(diode.testDiode(2, 3, A0, VCC));
   }
   while (display.nextPage());
 
-  delay(1000);
+  delay(2000);
 }
