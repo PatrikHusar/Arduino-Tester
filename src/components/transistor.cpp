@@ -3,7 +3,6 @@
 transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, Transistor::pinPos transistorElectrodesPos[3], float tolerance)
 {
     transistorStatus transistorType;
-    Transistor::pinPos transistorElectrodesPos[3];
     setPinMode(dPins[0], OUTPUT, dPins[1], OUTPUT, dPins[2], OUTPUT);
     float v1[3], v2[3], v3[3];
     float pinSet1[3] = {HIGH, HIGH, LOW};
@@ -63,7 +62,7 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
     {
         transistorType = TRANSISTOR_INSERTED_NPN;
         transistorElectrodesPos[0].pin = dPins[npnBaseIndex];
-        transistorElectrodesPos[0].name = "Base";
+        transistorElectrodesPos[0].name = "B";
 
         uint8_t idx1 = (npnBaseIndex + 1) % 3;
         uint8_t idx2 = (npnBaseIndex + 2) % 3;
@@ -79,23 +78,23 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
         if (voltageAtIdx1 < voltageAtIdx2)
         {
             transistorElectrodesPos[1].pin = dPins[idx1];
-            transistorElectrodesPos[1].name = "Collector";
+            transistorElectrodesPos[1].name = "C";
             transistorElectrodesPos[2].pin = dPins[idx2];
-            transistorElectrodesPos[2].name = "Emitter";
+            transistorElectrodesPos[2].name = "E";
         }
         else
         {
             transistorElectrodesPos[1].pin = dPins[idx2];
-            transistorElectrodesPos[1].name = "Collector";
+            transistorElectrodesPos[1].name = "C";
             transistorElectrodesPos[2].pin = dPins[idx1];
-            transistorElectrodesPos[2].name = "Emitter";
+            transistorElectrodesPos[2].name = "E";
         }
     }
     else if (pnpMatches == 1 && npnMatches != 1)
     {
         transistorType = TRANSISTOR_INSERTED_PNP;
         transistorElectrodesPos[0].pin = dPins[pnpBaseIndex];
-        transistorElectrodesPos[0].name = "Base";
+        transistorElectrodesPos[0].name = "B";
 
         uint8_t idx1 = (pnpBaseIndex + 1) % 3;
         uint8_t idx2 = (pnpBaseIndex + 2) % 3;
@@ -112,14 +111,14 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
 
         if (voltageAtIdx1 < voltageAtIdx2) {
             transistorElectrodesPos[1].pin = dPins[idx1];
-            transistorElectrodesPos[1].name = "Emitter";
+            transistorElectrodesPos[1].name = "E";
             transistorElectrodesPos[2].pin = dPins[idx2];
-            transistorElectrodesPos[2].name = "Collector";
+            transistorElectrodesPos[2].name = "C";
         } else {
             transistorElectrodesPos[1].pin = dPins[idx2];
-            transistorElectrodesPos[1].name = "Emitter";
+            transistorElectrodesPos[1].name = "E";
             transistorElectrodesPos[2].pin = dPins[idx1];
-            transistorElectrodesPos[2].name = "Collector";
+            transistorElectrodesPos[2].name = "C";
         }
     }
     else if (npnMatches == 3)
@@ -131,10 +130,22 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
         transistorType = TRANSISTOR_NOT_WORKING;
     }
 
-    Serial.println(transistorElectrodesPos[0].name + ": " + String(transistorElectrodesPos[0].pin) + ", " +
-                    transistorElectrodesPos[1].name + ": " + String(transistorElectrodesPos[1].pin) + ", " +
-                    transistorElectrodesPos[2].name + ": " + String(transistorElectrodesPos[2].pin));
-
+    Transistor::pinPos sorted[3];
+    sorted[0] = transistorElectrodesPos[0];
+    sorted[1] = transistorElectrodesPos[1];
+    sorted[2] = transistorElectrodesPos[2];
+    for (int i = 0; i < 2; i++)
+    {
+        for (int j = 0; j < 2 - i; j++)
+        {
+            if (sorted[j].pin > sorted[j + 1].pin)
+            {
+                Transistor::pinPos switchPos = sorted[j];
+                sorted[j] = sorted[j + 1];
+                sorted[j + 1] = switchPos;
+            }
+        }
+    }
     return transistorType;
 }
 
