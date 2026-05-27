@@ -146,6 +146,9 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
             }
         }
     }
+    transistorElectrodesPos[0] = sorted[0];
+    transistorElectrodesPos[1] = sorted[1];
+    transistorElectrodesPos[2] = sorted[2];
     return transistorType;
 }
 
