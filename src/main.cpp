@@ -16,6 +16,14 @@ float VCC = 5.0;
 uint8_t buttonPin = 13;
 U8GLIB_SSD1306_128X64 display;
 
+const char* modeToStr(uint8_t mode) {
+  switch (mode) {
+    case 0:  return "Testing Transistor";
+    case 1:  return "Testing Diode";
+    case 2:  return "Testing Resistor";
+    default: return "unknown status";
+  }
+}
 const char* transistorStatusToText(transistorStatus status) {
   switch (status) {
     case TRANSISTOR_NOT_INSERTED:  return "not inserted";
@@ -44,27 +52,28 @@ String text1;
 String text2;
 void loop()
 {
-  uint8_t mode = switchComponent.isPressed(buttonPin, 2);
-  if (mode == 0) 
-  {
-  text1 = "type: " + String(transistorStatusToText(transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos)));
-  text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " + String(transistorElectrodesPos[1].name) + " : " + String(transistorElectrodesPos[2].name);
-  }
-  else if (mode == 1)
-  {
-    text1 = "type: " + String(diodeStatusToText(diode.testDiode(pins[0], pins[1], analogPins[0], VCC)));
-  }
-  else if (mode == 2)
-  {
-    float resistorValue = resistor.testResistor(pins[0], pins[1], analogPins[0], VCC, 1000.0);
-    text1 = "resistance: " + String(resistorValue) + " Ohms";
-  }
+  delay(1000);
   display.firstPage();
   do
   {
+    uint8_t mode = switchComponent.isPressed(buttonPin, 2);
     display.setFont(u8g_font_5x8);
     display.setPrintPos(1, 10);
-    display.print("TRANSISTOR TESTING");
+    display.print(modeToStr(mode));
+    if (mode == 0) 
+    {
+    text1 = "type: " + String(transistorStatusToText(transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos)));
+    text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " + String(transistorElectrodesPos[1].name) + " : " + String(transistorElectrodesPos[2].name);
+    }
+    else if (mode == 1)
+    {
+      text1 = "type: " + String(diodeStatusToText(diode.testDiode(pins, analogPins[0], VCC)));
+    }
+    else if (mode == 2)
+    {
+      float resistorValue = resistor.testResistor(pins, analogPins[0], VCC, 1000.0);
+      text1 = "resistance: " + String(resistorValue) + " Ohms";
+    }
     display.setPrintPos(1, 30);
     display.print(text1);
     if (mode == 0)
@@ -76,9 +85,7 @@ void loop()
   }
   while (display.nextPage());
 
-  delay(2000);
   // Serial.println(resistor.testResistor(pins, A0, 5.0, 1000.0));
   Serial.println(transistor.testTransistor(pins, analogPins, 5.0, transistorElectrodesPos));
   // Serial.println(diode.testDiode(pins, A0, 5.0));
-  delay(1000);
 }
