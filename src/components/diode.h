@@ -15,8 +15,8 @@ enum diodeStatus
 class Diode : public baseComponent
 {
     public:
-        diodeStatus testDiode(uint8_t digiPin1, uint8_t digiPin2, uint8_t analogPin, float VCC, float tolerance = 0.2, float diodeForwardVoltage = 0.7);
+        diodeStatus testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, float tolerance = 0.2, float diodeForwardVoltage = 0.7);
     private:
-        void getVoltages(uint8_t analogPin, uint8_t digiPin1, uint8_t digiPin2, float VCC, float &voltageHighLow, float &voltageLowHigh);
+        void getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh);
 };
 #endif

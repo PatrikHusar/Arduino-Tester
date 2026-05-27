@@ -21,6 +21,6 @@ void loop()
 {
   // Serial.println(resistor.testResistor(pins, A0, 5.0, 1000.0));
   Serial.println(transistor.testTransistor(pins, analogPins, 5.0, transistorElectrodesPos));
-  // Serial.println(diode.testDiode(2, 3, A0, 5.0));
+  // Serial.println(diode.testDiode(pins, A0, 5.0));
   delay(1000);
 }
