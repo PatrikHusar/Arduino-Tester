@@ -1,6 +1,6 @@
 #include "diode.h"
 
-DiodeStatus Diode::testDiode(uint8_t digiPin1, uint8_t digiPin2, uint8_t analogPin, float VCC, float tolerance, float diodeForwardVoltage)
+diodeStatus Diode::testDiode(uint8_t digiPin1, uint8_t digiPin2, uint8_t analogPin, float VCC, float tolerance, float diodeForwardVoltage)
 {
     setPinMode(digiPin1, OUTPUT, digiPin2, OUTPUT);
     float voltageHighLow, voltageLowHigh;
