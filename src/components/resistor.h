@@ -7,6 +7,6 @@
 class Resistor : public baseComponent
 {
     public:
-        float testResistor(uint8_t digiPin1, uint8_t digiPin2, uint8_t analogPin, float VCC, float resistor1Value);
+        float testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, float resistor1Value);
 };
 #endif
