@@ -14,3 +14,7 @@ Currently can measure:
 
    ![](/images/resistorScheme.png)
    ![](/images/resistorTable.png)
+
+Added Display for showing test results:
+
+  ![](/images/displayInfo.png)
