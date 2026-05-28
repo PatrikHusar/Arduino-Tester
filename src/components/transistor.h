@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "diode.h"
+#include "baseComponent.h"
 
 enum transistorStatus
 {

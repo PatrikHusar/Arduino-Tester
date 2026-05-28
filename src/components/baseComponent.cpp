@@ -1,5 +1,16 @@
 #include "baseComponent.h"
 
+const char* baseComponent::modeToStr(uint8_t mode) {
+  switch (mode) {
+    case 0:  return "Testing Transistor";
+    case 1:  return "Testing Diode";
+    case 2:  return "Testing Resistor";
+    default: return "unknown status";
+  }
+}
+
+
+
 void baseComponent::setPinMode(uint8_t pin1, uint8_t mode1, uint8_t pin2, uint8_t mode2, uint8_t pin3, uint8_t mode3)
 {
     if (pin1 != 255) {

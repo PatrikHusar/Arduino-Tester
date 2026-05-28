@@ -5,9 +5,6 @@ diodeStatus Diode::testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     setPinMode(pins[0], OUTPUT, pins[1], OUTPUT);
     float voltageHighLow, voltageLowHigh;
     getVoltages(analogPin, pins, VCC, voltageHighLow, voltageLowHigh);
-    Serial.println("meas: " + String(voltageHighLow) + ", " + String(voltageLowHigh));
-    Serial.println("tolerance: " + String(tolerance) + ", forward voltage: " + String(diodeForwardVoltage));
-    Serial.println("vcc: " + String(VCC));
     if (voltageHighLow == VCC &&
         voltageLowHigh == 0)
     {
