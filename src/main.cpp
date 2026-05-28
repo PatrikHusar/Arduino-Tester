@@ -76,7 +76,7 @@ void loop()
     display.firstPage();
     do
     {
-      display.setFont(u8g_font_5x8);
+      display.setFont(u8g_font_7x13);
       display.setPrintPos(1, 10);
       display.print(baseComponent::modeToStr(switchMode));
     }
@@ -92,8 +92,7 @@ void loop()
       display.firstPage();
       do
       {
-    
-        display.setFont(u8g_font_5x8);
+        display.setFont(u8g_font_7x13);
         display.setPrintPos(1, 10);
         display.print(baseComponent::modeToStr(switchMode));
         display.setPrintPos(1, 30);
