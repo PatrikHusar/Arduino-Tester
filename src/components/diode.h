@@ -16,6 +16,7 @@ class Diode : public baseComponent
 {
     public:
         diodeStatus testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, float tolerance = 0.2, float diodeForwardVoltage = 0.7);
+        static const char* statusToText(diodeStatus status);
     private:
         void getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh);
 };

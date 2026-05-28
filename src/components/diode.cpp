@@ -37,3 +37,12 @@ void Diode::getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &vo
     delay(50);
     voltageLowHigh = readAnalogPin(analogPin, VCC);
 }
+
+const char* Diode::statusToText(diodeStatus status) {
+  switch (status) {
+    case DIODE_NOT_INSERTED: return "not inserted";
+    case DIODE_INSERTED_A_C: return "A-C";
+    case DIODE_INSERTED_C_A: return "C-A";
+    case DIODE_NOT_WORKING: return "not working";
+    default: return "unknown status";}
+}
