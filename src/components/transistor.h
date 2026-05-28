@@ -19,6 +19,7 @@ class Transistor : public baseComponent
         int8_t pin = -1;
         String name = "";
     };
+    static const char* statusToText(transistorStatus status);
     transistorStatus testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, Transistor::pinPos transistorElectrodesPos[3], float tolerance = 0.1);
     private:
         void measurePins(uint8_t dPins[3], uint8_t aPins[3], float pinValues[3], float VCC, float voltages[3]);

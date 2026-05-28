@@ -24,14 +24,6 @@ const char* modeToStr(uint8_t mode) {
     default: return "unknown status";
   }
 }
-const char* transistorStatusToText(transistorStatus status) {
-  switch (status) {
-    case TRANSISTOR_NOT_INSERTED:  return "not inserted";
-    case TRANSISTOR_INSERTED_NPN:  return "NPN";
-    case TRANSISTOR_INSERTED_PNP:  return "PNP";
-    case TRANSISTOR_NOT_WORKING: return "not working";
-    default: return "unknown status";}
-}
 
 Transistor::pinPos transistorElectrodesPos[3];
 
@@ -55,7 +47,7 @@ void loop()
     display.print(modeToStr(mode));
     if (mode == 0) 
     {
-    text1 = "type: " + String(transistorStatusToText(transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos)));
+    text1 = "type: " + String(Transistor::statusToText(transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos)));
     text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " + String(transistorElectrodesPos[1].name) + " : " + String(transistorElectrodesPos[2].name);
     }
     else if (mode == 1)

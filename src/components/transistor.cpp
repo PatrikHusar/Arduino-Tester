@@ -160,3 +160,13 @@ void Transistor::measurePins(uint8_t dPins[3], uint8_t aPins[3], float pinValues
     voltages[1] = readAnalogPin(aPins[1], VCC);
     voltages[2] = readAnalogPin(aPins[2], VCC);
 }
+
+const char* Transistor::statusToText(transistorStatus status)
+{
+  switch (status) {
+    case TRANSISTOR_NOT_INSERTED:  return "not inserted";
+    case TRANSISTOR_INSERTED_NPN:  return "NPN";
+    case TRANSISTOR_INSERTED_PNP:  return "PNP";
+    case TRANSISTOR_NOT_WORKING:   return "not working";
+    default:                       return "unknown status";}
+}
