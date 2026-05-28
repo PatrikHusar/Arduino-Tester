@@ -60,7 +60,7 @@ void loop()
     }
     else if (mode == 1)
     {
-      text1 = "type: " + String(diodeStatusToText(diode.testDiode(pins, analogPins[0], VCC)));
+      text1 = "type: " + String(Diode::statusToText(diode.testDiode(pins, analogPins[0], VCC)));
     }
     else if (mode == 2)
     {

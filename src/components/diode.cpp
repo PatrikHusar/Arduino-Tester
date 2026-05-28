@@ -43,6 +43,7 @@ const char* Diode::statusToText(diodeStatus status) {
     case DIODE_NOT_INSERTED: return "not inserted";
     case DIODE_INSERTED_A_C: return "A-C";
     case DIODE_INSERTED_C_A: return "C-A";
-    case DIODE_NOT_WORKING: return "not working";
-    default: return "unknown status";}
+    case DIODE_NOT_WORKING:  return "not working";
+    default:                 return "unknown status";
+  }
 }
