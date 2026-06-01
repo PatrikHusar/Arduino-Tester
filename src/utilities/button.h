@@ -1,3 +1,6 @@
+#ifndef button_H
+#define button_H
+
 #include <Arduino.h>
 
 class Button
@@ -9,3 +12,4 @@ class Button
         void checkPinButtonPressed(uint8_t &mode, uint8_t maxMode);
 
 };
+#endif
