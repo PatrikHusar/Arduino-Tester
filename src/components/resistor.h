@@ -7,7 +7,7 @@
 class Resistor : public baseComponent
 {
     public:
-        float testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, float resistor1Value);
+        float testResistor(uint8_t pin1, uint8_t pin2, uint8_t analogPin, float VCC, float resistor1Value);
         String formatResistorValue(float ohms);
 };
 #endif

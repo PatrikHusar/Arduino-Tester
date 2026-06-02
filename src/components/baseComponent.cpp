@@ -5,7 +5,7 @@
 
 void baseComponent::testComponent(uint8_t mode, String &text1, String &text2, 
                                   void* transistorPtr, void* diodePtr, void* resistorPtr,
-                                  uint8_t pins[], uint8_t analogPins[], float vcc)
+                                  uint8_t pins[], uint8_t analogPins[], float VCC)
 {
   Transistor& transistor = *(Transistor*)transistorPtr;
   Diode& diode = *(Diode*)diodePtr;
@@ -14,7 +14,7 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
   {
     case 0: {
       Transistor::pinPos transistorElectrodesPos[3];
-      transistorStatus tStatus = transistor.testTransistor(pins, analogPins, vcc, transistorElectrodesPos);
+      transistorStatus tStatus = transistor.testTransistor(pins, analogPins, VCC, transistorElectrodesPos);
       text1 = "type: " + String(Transistor::statusToText(tStatus));
       text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " 
                         + String(transistorElectrodesPos[1].name) + " : " 
@@ -22,13 +22,13 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
       break;
     }
     case 1: {
-      diodeStatus dStatus = diode.testDiode(pins[0], pins[3], analogPins[0], vcc);
+      diodeStatus dStatus = diode.testDiode(pins[0], pins[3], analogPins[0], VCC);
       text1 = "type: " + String(Diode::statusToText(dStatus));
       text2 = "";
       break;
     }
     case 2: {
-      float resistorValue = resistor.testResistor(pins, analogPins[0], vcc, 1000.0);
+      float resistorValue = resistor.testResistor(pins[0], pins[3], analogPins[0], VCC, 1000.0);
       text1 = "resistance: ";
       text2 = resistor.formatResistorValue(resistorValue);
       break;
