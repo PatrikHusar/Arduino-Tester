@@ -8,3 +8,25 @@ float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     float voltage = readAnalogPin(analogPin, VCC);
     return resistor1Value * (voltage / (VCC - voltage));
 }
+String formatResistorValue(float ohms)
+{
+    String stringOhms;
+    if (ohms >= 10000000.0)
+    {
+        stringOhms = "Too High";
+    }
+    else if (ohms >= 1000000.0)
+    {
+        float mohms = ohms / 1000000.0;
+        stringOhms = String(mohms, 2) + " MOhm";
+    }
+    else if (ohms >= 1000.0) {
+        float kohms = ohms / 1000.0;
+        stringOhms = String(kohms, 1) + " kOhm";
+    }
+    else 
+    {
+        stringOhms = String(ohms, 0) + " Ohm";
+    }
+    return stringOhms;
+}
