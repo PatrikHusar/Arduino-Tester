@@ -30,6 +30,7 @@ void setup()
   switchButton.init(switchButtonPin);
   acceptButton.init(acceptButtonPin);
 }
+
 void loop()
 {
   switchButton.checkPinButtonPressed(switchMode, 2);

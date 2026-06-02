@@ -1,9 +1,9 @@
 #include "resistor.h"
 
-float Resistor::testResistor(uint8_t pin1, uint8_t pin2, uint8_t analogPin, float VCC, float resistor1Value)
+float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, float resistor1Value)
 {
-    setPinMode(pin1, OUTPUT, pin2, OUTPUT);
-    setPinValues(pin1, LOW, pin2, HIGH);
+    setPinMode(pins[0], OUTPUT, pins[1], OUTPUT);
+    setPinValues(pins[0], LOW, pins[1], HIGH);
     delay(50);
     float voltage = readAnalogPin(analogPin, VCC);
     return resistor1Value * (voltage / (VCC - voltage));
