@@ -1,10 +1,10 @@
 #include "diode.h"
 
-diodeStatus Diode::testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, float tolerance, float diodeForwardVoltage)
+diodeStatus Diode::testDiode(uint8_t pin1, uint8_t pin2, uint8_t analogPin, float VCC, float tolerance, float diodeForwardVoltage)
 {
-    setPinMode(pins[0], OUTPUT, pins[1], OUTPUT);
+    setPinMode(pin1, OUTPUT, pin2, OUTPUT);
     float voltageHighLow, voltageLowHigh;
-    getVoltages(analogPin, pins, VCC, voltageHighLow, voltageLowHigh);
+    getVoltages(analogPin, pin1, pin2, VCC, voltageHighLow, voltageLowHigh);
     if (voltageHighLow == VCC &&
         voltageLowHigh == 0)
     {
@@ -25,12 +25,12 @@ diodeStatus Diode::testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     return DIODE_NOT_WORKING;
 }
 
-void Diode::getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh)
+void Diode::getVoltages(uint8_t analogPin, uint8_t pin1, uint8_t pin2, float VCC, float &voltageHighLow, float &voltageLowHigh)
 {
-    setPinValues(pins[0], HIGH, pins[1], LOW);
+    setPinValues(pin1, HIGH, pin2, LOW);
     delay(50);
     voltageHighLow = readAnalogPin(analogPin, VCC);
-    setPinValues(pins[0], LOW, pins[1], HIGH);
+    setPinValues(pin1, LOW, pin2, HIGH);
     delay(50);
     voltageLowHigh = readAnalogPin(analogPin, VCC);
 }

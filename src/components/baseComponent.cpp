@@ -22,7 +22,7 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
       break;
     }
     case 1: {
-      diodeStatus dStatus = diode.testDiode(pins, analogPins[0], vcc);
+      diodeStatus dStatus = diode.testDiode(pins[0], pins[3], analogPins[0], vcc);
       text1 = "type: " + String(Diode::statusToText(dStatus));
       text2 = "";
       break;
