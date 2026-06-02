@@ -8,7 +8,7 @@ float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     float voltage = readAnalogPin(analogPin, VCC);
     return resistor1Value * (voltage / (VCC - voltage));
 }
-String formatResistorValue(float ohms)
+String Resistor::formatResistorValue(float ohms)
 {
     String stringOhms;
     if (ohms >= 10000000.0)
