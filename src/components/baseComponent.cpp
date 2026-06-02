@@ -7,41 +7,57 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
                                   void* transistorPtr, void* diodePtr, void* resistorPtr,
                                   uint8_t pins[], uint8_t analogPins[], float vcc)
 {
-  Transistor& transistor = *(Transistor*)transistorPtr;
-  Diode& diode = *(Diode*)diodePtr;
-  Resistor& resistor = *(Resistor*)resistorPtr;
-  switch (mode)
-  {
-    case 0: {
-      Transistor::pinPos transistorElectrodesPos[3];
-      transistorStatus tStatus = transistor.testTransistor(pins, analogPins, vcc, transistorElectrodesPos);
-      text1 = "type: " + String(Transistor::statusToText(tStatus));
-      text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " 
-                        + String(transistorElectrodesPos[1].name) + " : " 
-                        + String(transistorElectrodesPos[2].name);
-      break;
+    Transistor& transistor = *(Transistor*)transistorPtr;
+    Diode& diode = *(Diode*)diodePtr;
+    Resistor& resistor = *(Resistor*)resistorPtr;
+    switch (mode)
+    {
+        case 0:
+        {
+            Transistor::pinPos transistorElectrodesPos[3];
+            uint8_t dPins[3] = {pins[0], pins[1], pins[2]};
+            transistorStatus tStatus = transistor.testTransistor(dPins, analogPins, vcc, transistorElectrodesPos);
+            text1 = "type: " + String(Transistor::statusToText(tStatus));
+            text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " 
+                                + String(transistorElectrodesPos[1].name) + " : " 
+                                + String(transistorElectrodesPos[2].name);
+            break;
+        }
+        case 1:
+        {
+            uint8_t dPins[2] = {pins[0], pins[3]};
+            diodeStatus dStatus = diode.testDiode(dPins, analogPins[0], vcc);
+            text1 = "inserted:";
+            text2 = String(Diode::statusToText(dStatus));
+            break;
+        }
+        case 2:
+        {
+            uint8_t dPins[2] = {pins[0], pins[3]};
+            float resistorValue = resistor.testResistor(dPins, analogPins[0], vcc, 1000.0);
+            text1 = "resistance:";
+            text2 = resistor.formatResistorValue(resistorValue);
+            break;
+        }
     }
-    case 1: {
-      diodeStatus dStatus = diode.testDiode(pins, analogPins[0], vcc);
-      text1 = "type: " + String(Diode::statusToText(dStatus));
-      text2 = "";
-      break;
-    }
-    case 2: {
-      float resistorValue = resistor.testResistor(pins, analogPins[0], vcc, 1000.0);
-      text1 = "resistance: ";
-      text2 = resistor.formatResistorValue(resistorValue);
-      break;
-    }
-  }
 }
 
-const char* baseComponent::modeToStr(uint8_t mode) {
+const char* baseComponent::modeToStr(uint8_t mode)
+{
   switch (mode) {
-    case 0:  return "Testing Transistor";
-    case 1:  return "Testing Diode";
-    case 2:  return "Testing Resistor";
-    default: return "unknown status";
+    case 0:  return "Transistor Test";
+    case 1:  return "Diode Test";
+    case 2:  return "Resistor Test";
+    default: return "unknown";
+  }
+}
+const char* baseComponent::componentAllowedPins(uint8_t mode)
+{
+    switch (mode) {
+    case 0:  return "use pins: 1, 2, 3";
+    case 1:  return "use pins: 1, 4";
+    case 2:  return "use pins: 1, 4";
+    default: return "unknown";
   }
 }
 

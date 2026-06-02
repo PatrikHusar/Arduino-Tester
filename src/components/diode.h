@@ -6,7 +6,6 @@
 
 enum diodeStatus
 {
-    DIODE_NOT_INSERTED,
     DIODE_INSERTED_A_C,
     DIODE_INSERTED_C_A,
     DIODE_NOT_WORKING

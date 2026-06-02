@@ -24,33 +24,39 @@ uint8_t switchMode = 0;
 uint8_t accept = 0;
 unsigned long lastMeasuredTime = 0;
 uint8_t lastSwitchMode = 0;
+uint8_t lastAccept = 0;
 
 void setup()
 {
-  switchButton.init(switchButtonPin);
-  acceptButton.init(acceptButtonPin);
+	switchButton.init(switchButtonPin);
+	acceptButton.init(acceptButtonPin);
 }
+
 void loop()
 {
-  switchButton.checkPinButtonPressed(switchMode, 2);
-  if (switchMode != lastSwitchMode)
-  {
-    lastSwitchMode = switchMode;
-    accept = 0;
-    Display::displayText("", "", switchMode, display);
-  }
-  acceptButton.checkPinButtonPressed(accept, 1);
-  if (accept == 1)
-  {
-    if (millis() - lastMeasuredTime > 1000)
-    {
-      lastMeasuredTime = millis();
-      baseComponent::testComponent(switchMode, text1, text2, &transistor, &diode, &resistor, pins, analogPins, VCC);
-      Display::displayText(text1, text2, switchMode, display);
-    }
-  }
-  else
-  {
-    accept = 0;
-  }
+	lastAccept = accept;
+	switchButton.checkPinButtonPressed(switchMode, 2);
+	acceptButton.checkPinButtonPressed(accept, 1);
+	if (switchMode != lastSwitchMode)
+	{
+		lastSwitchMode = switchMode;
+		accept = 0;
+		Display::displayText(baseComponent::componentAllowedPins(switchMode), "", switchMode, display);
+	}
+	if (accept == 1)
+	{
+		if (millis() - lastMeasuredTime > 1000)
+		{
+			lastMeasuredTime = millis();
+			baseComponent::testComponent(switchMode, text1, text2, &transistor, &diode, &resistor, pins, analogPins, VCC);
+			Display::displayText(text1, text2, switchMode, display);
+		}
+	}
+	else
+	{
+		if (accept == 0 && lastAccept == 1)
+		{
+			Display::displayText(baseComponent::componentAllowedPins(switchMode), "", switchMode, display);
+		}
+	}
 }

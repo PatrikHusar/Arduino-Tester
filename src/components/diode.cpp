@@ -5,14 +5,9 @@ diodeStatus Diode::testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     setPinMode(pins[0], OUTPUT, pins[1], OUTPUT);
     float voltageHighLow, voltageLowHigh;
     getVoltages(analogPin, pins, VCC, voltageHighLow, voltageLowHigh);
-    if (voltageHighLow == VCC &&
+    if (voltageHighLow > diodeForwardVoltage - tolerance &&
+        voltageHighLow < diodeForwardVoltage + tolerance &&
         voltageLowHigh == 0)
-    {
-        return DIODE_NOT_INSERTED;
-    }
-    else if (voltageHighLow > diodeForwardVoltage - tolerance &&
-            voltageHighLow < diodeForwardVoltage + tolerance &&
-            voltageLowHigh == 0)
     {
         return DIODE_INSERTED_A_C;
     }
@@ -22,7 +17,10 @@ diodeStatus Diode::testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     {
         return DIODE_INSERTED_C_A;
     }
-    return DIODE_NOT_WORKING;
+    else
+    {
+        return DIODE_NOT_WORKING;
+    }
 }
 
 void Diode::getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh)
@@ -37,9 +35,8 @@ void Diode::getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &vo
 
 const char* Diode::statusToText(diodeStatus status) {
   switch (status) {
-    case DIODE_NOT_INSERTED: return "not inserted";
-    case DIODE_INSERTED_A_C: return "A-C";
-    case DIODE_INSERTED_C_A: return "C-A";
+    case DIODE_INSERTED_A_C: return "Aanode-Cathode";
+    case DIODE_INSERTED_C_A: return "Cathode-Anode";
     case DIODE_NOT_WORKING:  return "not working";
     default:                 return "unknown status";
   }
