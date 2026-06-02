@@ -48,8 +48,8 @@ void testComponent(uint8_t mode, String &text1, String &text2)
     case 2: 
     {
       float resistorValue = resistor.testResistor(pins, analogPins[0], VCC, 1000.0);
-      text1 = "resistance: " + String(resistorValue) + " Ohms";
-      text2 = "";
+      text1 = "resistance: ";
+      text2 = resistor.formatResistorValue(resistorValue);
       break;
     }
     default: 
