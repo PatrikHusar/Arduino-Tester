@@ -1,4 +1,40 @@
 #include "baseComponent.h"
+#include "transistor.h"
+#include "diode.h"
+#include "resistor.h"
+
+void baseComponent::testComponent(uint8_t mode, String &text1, String &text2, 
+                                  void* transistorPtr, void* diodePtr, void* resistorPtr,
+                                  uint8_t pins[], uint8_t analogPins[], float vcc)
+{
+  Transistor& transistor = *(Transistor*)transistorPtr;
+  Diode& diode = *(Diode*)diodePtr;
+  Resistor& resistor = *(Resistor*)resistorPtr;
+  switch (mode)
+  {
+    case 0: {
+      Transistor::pinPos transistorElectrodesPos[3];
+      transistorStatus tStatus = transistor.testTransistor(pins, analogPins, vcc, transistorElectrodesPos);
+      text1 = "type: " + String(Transistor::statusToText(tStatus));
+      text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " 
+                        + String(transistorElectrodesPos[1].name) + " : " 
+                        + String(transistorElectrodesPos[2].name);
+      break;
+    }
+    case 1: {
+      diodeStatus dStatus = diode.testDiode(pins, analogPins[0], vcc);
+      text1 = "type: " + String(Diode::statusToText(dStatus));
+      text2 = "";
+      break;
+    }
+    case 2: {
+      float resistorValue = resistor.testResistor(pins, analogPins[0], vcc, 1000.0);
+      text1 = "resistance: ";
+      text2 = resistor.formatResistorValue(resistorValue);
+      break;
+    }
+  }
+}
 
 const char* baseComponent::modeToStr(uint8_t mode) {
   switch (mode) {
@@ -8,8 +44,6 @@ const char* baseComponent::modeToStr(uint8_t mode) {
     default: return "unknown status";
   }
 }
-
-
 
 void baseComponent::setPinMode(uint8_t pin1, uint8_t mode1, uint8_t pin2, uint8_t mode2, uint8_t pin3, uint8_t mode3)
 {
