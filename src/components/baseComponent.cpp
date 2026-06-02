@@ -27,7 +27,7 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
         {
             uint8_t dPins[2] = {pins[0], pins[3]};
             diodeStatus dStatus = diode.testDiode(dPins, analogPins[0], vcc);
-            text1 = "type:";
+            text1 = "inserted:";
             text2 = String(Diode::statusToText(dStatus));
             break;
         }
@@ -42,11 +42,21 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
     }
 }
 
-const char* baseComponent::modeToStr(uint8_t mode) {
+const char* baseComponent::modeToStr(uint8_t mode)
+{
   switch (mode) {
     case 0:  return "Transistor Test";
     case 1:  return "Diode Test";
     case 2:  return "Resistor Test";
+    default: return "unknown";
+  }
+}
+const char* baseComponent::componentAllowedPins(uint8_t mode)
+{
+    switch (mode) {
+    case 0:  return "use pins: 1, 2, 3";
+    case 1:  return "use pins: 1, 4";
+    case 2:  return "use pins: 1, 4";
     default: return "unknown";
   }
 }

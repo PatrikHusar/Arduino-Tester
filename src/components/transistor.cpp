@@ -12,7 +12,8 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
     measurePins(dPins, aPins, pinSet2, VCC, v2);
     measurePins(dPins, aPins, pinSet3, VCC, v3);
     float values[3][3];
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 3; ++i)
+    {
         values[0][i] = v1[i];
         values[1][i] = v2[i];
         values[2][i] = v3[i];
