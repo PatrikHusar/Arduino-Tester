@@ -35,8 +35,8 @@ void Diode::getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &vo
 
 const char* Diode::statusToText(diodeStatus status) {
   switch (status) {
-    case DIODE_INSERTED_A_C: return "Aanode-Cathode";
-    case DIODE_INSERTED_C_A: return "Cathode-Anode";
+    case DIODE_INSERTED_A_C: return "A-C";
+    case DIODE_INSERTED_C_A: return "C-A";
     case DIODE_NOT_WORKING:  return "not working";
     default:                 return "unknown status";
   }
