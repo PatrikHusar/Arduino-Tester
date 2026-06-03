@@ -5,7 +5,7 @@
 
 void baseComponent::testComponent(uint8_t mode, String &text1, String &text2, 
                                   void* transistorPtr, void* diodePtr, void* resistorPtr,
-                                  uint8_t pins[], uint8_t analogPins[], float vcc)
+                                  uint8_t pins[], uint8_t analogPins[], float VCC)
 {
     Transistor& transistor = *(Transistor*)transistorPtr;
     Diode& diode = *(Diode*)diodePtr;
@@ -16,7 +16,7 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
         {
             Transistor::pinPos transistorElectrodesPos[3];
             uint8_t dPins[3] = {pins[0], pins[1], pins[2]};
-            transistorStatus tStatus = transistor.testTransistor(dPins, analogPins, vcc, transistorElectrodesPos);
+            transistorStatus tStatus = transistor.testTransistor(dPins, analogPins, VCC, transistorElectrodesPos);
             text1 = "type: " + String(Transistor::statusToText(tStatus));
             text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " 
                                 + String(transistorElectrodesPos[1].name) + " : " 
@@ -26,7 +26,7 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
         case 1:
         {
             uint8_t dPins[2] = {pins[0], pins[3]};
-            diodeStatus dStatus = diode.testDiode(dPins, analogPins[0], vcc);
+            diodeStatus dStatus = diode.testDiode(dPins, analogPins[0], VCC);
             text1 = "inserted:";
             text2 = String(Diode::statusToText(dStatus));
             break;
@@ -34,7 +34,7 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
         case 2:
         {
             uint8_t dPins[2] = {pins[0], pins[3]};
-            float resistorValue = resistor.testResistor(dPins, analogPins[0], vcc, 1000.0);
+            float resistorValue = resistor.testResistor(dPins, analogPins[0], VCC, 1000.0);
             text1 = "resistance:";
             text2 = resistor.formatResistorValue(resistorValue);
             break;
