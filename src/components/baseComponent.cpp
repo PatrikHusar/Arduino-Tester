@@ -26,9 +26,10 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
         case 1:
         {
             uint8_t dPins[2] = {pins[0], pins[3]};
-            diodeStatus dStatus = diode.testDiode(dPins, analogPins[0], VCC);
-            text1 = "inserted:";
-            text2 = String(Diode::statusToText(dStatus));
+            float diodeForwardVoltage;
+            diodeStatus dStatus = diode.testDiode(dPins, analogPins[0], VCC, diodeForwardVoltage);
+            text1 = "inserted: " + String(Diode::statusToText(dStatus));
+            text2 = "opening U: " + String(diodeForwardVoltage) + " V";
             break;
         }
         case 2:
