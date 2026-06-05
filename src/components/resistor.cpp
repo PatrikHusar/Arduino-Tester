@@ -1,13 +1,20 @@
 #include "resistor.h"
 
+Resistor::Resistor() : avg(20)
+{
+}
+
 float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, float resistor1Value)
 {
     setPinMode(pins[0], OUTPUT, pins[1], OUTPUT);
     setPinValues(pins[0], HIGH, pins[1], LOW);
     delay(50);
     float voltage = readAnalogPin(analogPin, VCC);
-    return resistor1Value * (voltage / (VCC - voltage));
+    float resistorValue = resistor1Value * (voltage / (VCC - voltage));
+    Serial.println(resistorValue);
+    return avg.createAverage(resistorValue);
 }
+
 String Resistor::formatResistorValue(float ohms)
 {
     String stringOhms;

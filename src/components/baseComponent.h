@@ -1,5 +1,5 @@
-#ifndef BASECOMPONENT_H
-#define BASECOMPONENT_H
+#ifndef baseComponent_H
+#define baseComponent_H
 
 #include <Arduino.h>
 
