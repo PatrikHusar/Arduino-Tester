@@ -1,34 +1,33 @@
 #include "averagingValues.h"
 
-AveragingValues::AveragingValues(float *nValues, int nSize)
+AveragingValues::AveragingValues()
 {
-    i = 0;
-    size = nSize;
-    values = nValues;
-    for (int j = 0; j < size; j++)
-    {
-        values[j] = 0.0;
-    }
+    reset();
+}
+
+void AveragingValues::reset()
+{
+    count = 0;
+    average = 0.0;
 }
 
 float AveragingValues::createAverage(float value)
 {
-    values[i] = value;
-    i++;
-    average = 0.0; 
-    for (int j = 0; j < size; j++)
+    if (isinf(value))
     {
-        average += values[j];
+        reset();
+        return value;
     }
-    average = average / size;
-    if (i >= size || filledValues == true)
+    if (count > 0)
     {
-        if (i >= size)
+        float difference = abs(value - average);
+        float tolerance = average * 0.1;
+        if (difference > tolerance)
         {
-            i = 0;
+            reset();
         }
-        filledValues = true;
-        return average;
     }
-    return value;
+    count++;
+    average = average + ((value - average) / count);
+    return average;
 }

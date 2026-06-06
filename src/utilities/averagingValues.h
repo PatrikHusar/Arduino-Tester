@@ -6,13 +6,13 @@
 class AveragingValues
 {
 public:
-    AveragingValues(float *values, int nSize);
-    int i;
-    int size;
-    bool filledValues = false;
-    float *values;
-    float average = 0.0;
+    AveragingValues();
+    
+    unsigned long count;
+    float average;
+
     float createAverage(float value);
+    void reset();
 };
 
 #endif
