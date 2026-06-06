@@ -6,8 +6,10 @@ float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     setPinValues(pins[0], HIGH, pins[1], LOW);
     delay(50);
     float voltage = readAnalogPin(analogPin, VCC);
-    return resistor1Value * (voltage / (VCC - voltage));
+    float resistorValue = resistor1Value * (voltage / (VCC - voltage));
+    return avg.createAverage(resistorValue);
 }
+
 String Resistor::formatResistorValue(float ohms)
 {
     String stringOhms;
