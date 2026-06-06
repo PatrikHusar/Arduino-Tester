@@ -6,9 +6,10 @@
 class AveragingValues
 {
 public:
-    AveragingValues(int nSize);
+    AveragingValues(float *values, int nSize);
     int i;
     int size;
+    bool filledValues = false;
     float *values;
     float average = 0.0;
     float createAverage(float value);

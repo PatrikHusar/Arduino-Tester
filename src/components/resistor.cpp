@@ -1,6 +1,6 @@
 #include "resistor.h"
 
-Resistor::Resistor() : avg(20)
+Resistor::Resistor() : avg(buffer, bufferSize)
 {
 }
 
@@ -10,8 +10,7 @@ float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     setPinValues(pins[0], HIGH, pins[1], LOW);
     delay(50);
     float voltage = readAnalogPin(analogPin, VCC);
-    float resistorValue = resistor1Value * (voltage / (VCC - voltage));
-    Serial.println(resistorValue);
+    float resistorValue = resistor1Value * (voltage / (VCC - voltage));    
     return avg.createAverage(resistorValue);
 }
 

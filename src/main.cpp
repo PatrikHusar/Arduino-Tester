@@ -7,6 +7,8 @@
 #include "utilities/button.h"
 #include "utilities/display.h"
 
+uint8_t switchButtonPin = 11;
+uint8_t acceptButtonPin = 12;
 Button switchButton;
 Button acceptButton;
 Diode diode;
@@ -14,8 +16,6 @@ Transistor transistor;
 Resistor resistor;
 uint8_t pins[4] = {2, 3, 4, 5};
 uint8_t analogPins[3] = {A0, A1, A2};
-uint8_t switchButtonPin = 11;
-uint8_t acceptButtonPin = 12;
 U8GLIB_SSD1306_128X64 display;
 String text1;
 String text2;
@@ -28,20 +28,12 @@ uint8_t lastAccept = 0;
 
 void setup()
 {
-    Serial.begin(9600);
-    while (!Serial) {
-        ; // Čakanie na pripojenie sériového portu (dôležité najmä pre Leonardo/Micro/ESP, ale neuškodí ani tu)
-    }
-    delay(1000); // Daj počítaču čas otvoriť monitor
-    Serial.println("--- START TESTERA ---");
-    
     switchButton.init(switchButtonPin);
     acceptButton.init(acceptButtonPin);
 }
 
 void loop()
 {
-	Serial.println("loop");
 	lastAccept = accept;
 	switchButton.checkPinButtonPressed(switchMode, 2);
 	acceptButton.checkPinButtonPressed(accept, 1);
