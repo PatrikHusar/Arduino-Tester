@@ -1,4 +1,4 @@
-Hello, Arduino Tester is device, which can measure components and evaulate status of it.
+Hello, Arduino Tester is device, which can measure components and evaulate status of them.
 
 Currently can measure: 
  - Diode
