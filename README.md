@@ -36,3 +36,11 @@ Device info:
   pins 1, 2, 3 are for transistor testing
   
   pins 1, 4 are for diode and resistor testing
+
+some more photos:
+
+  ![](/images/photosOfDevice/photo1.jpg)
+
+  ![](/images/photosOfDevice/photo2.jpg)
+
+  ![](/images/photosOfDevice/photo3.jpg)
