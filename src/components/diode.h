@@ -19,6 +19,6 @@ class Diode : public baseComponent
     private:
         void getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh);
         float getOpenDiodeForwardVoltage(float voltageHighLow, float voltageLowHigh, float VCC);
-        float smallValue = 0.05;
+        const float smallValue = 0.05;
 };
 #endif

@@ -14,13 +14,21 @@ void baseComponent::testComponent(uint8_t mode, String &text1, String &text2,
     {
         case 0:
         {
+            float openingU = 10.0;
             Transistor::pinPos transistorElectrodesPos[3];
             uint8_t dPins[3] = {pins[0], pins[1], pins[2]};
-            transistorStatus tStatus = transistor.testTransistor(dPins, analogPins, VCC, transistorElectrodesPos);
+            transistorStatus tStatus = transistor.testTransistor(dPins, analogPins, VCC, transistorElectrodesPos, openingU);
             text1 = "type: " + String(Transistor::statusToText(tStatus));
+            if (openingU != 10.0)
+            {
+                text2 = "opening U: " + String(openingU) + " V";
+            }
+            else
+            {
             text2 = "pins: " + String(transistorElectrodesPos[0].name) + " : " 
                                 + String(transistorElectrodesPos[1].name) + " : " 
                                 + String(transistorElectrodesPos[2].name);
+            }
             break;
         }
         case 1:

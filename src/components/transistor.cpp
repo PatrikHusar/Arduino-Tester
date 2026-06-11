@@ -1,6 +1,6 @@
 #include "transistor.h"
 
-transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, Transistor::pinPos transistorElectrodesPos[3], float tolerance)
+transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], float VCC, Transistor::pinPos transistorElectrodesPos[3], float &openingU, float tolerance)
 {
     transistorStatus transistorType;
     setPinMode(dPins[0], OUTPUT, dPins[1], OUTPUT, dPins[2], OUTPUT);
@@ -130,7 +130,63 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
     {
         transistorType = TRANSISTOR_NOT_WORKING;
     }
+    if (testIndex == 0 && (transistorType == TRANSISTOR_INSERTED_NPN || transistorType == TRANSISTOR_INSERTED_PNP))
+    {
+        testIndex = 1;
+        uint8_t bIndex = 0, eIndex = 0;
+        for (uint8_t k = 0; k < 3; k++) {
+            if (transistorElectrodesPos[k].name == "B") {
+                for(uint8_t i=0; i<3; i++) if(dPins[i] == transistorElectrodesPos[k].pin) bIndex = i;
+            }
+            if (transistorElectrodesPos[k].name == "E") {
+                for(uint8_t i=0; i<3; i++) if(dPins[i] == transistorElectrodesPos[k].pin) eIndex = i;
+            }
+        }
 
+        openingU = getOpeningU(transistorElectrodesPos[0].pin, transistorElectrodesPos[2].pin, transistorType, VCC, aPins[bIndex], aPins[eIndex]);
+    }
+    else
+    {
+        testIndex = 0;
+        sortElectrodesPos(transistorElectrodesPos);
+    }
+    return transistorType;
+}
+
+void Transistor::measurePins(uint8_t dPins[3], uint8_t aPins[3], float pinValues[3], float VCC, float voltages[3])
+{
+    setPinValues(dPins[0], pinValues[0], dPins[1], pinValues[1], dPins[2], pinValues[2]);
+    delay(50);
+    voltages[0] = readAnalogPin(aPins[0], VCC);
+    voltages[1] = readAnalogPin(aPins[1], VCC);
+    voltages[2] = readAnalogPin(aPins[2], VCC);
+}
+
+float Transistor::getOpeningU(uint8_t basePin, uint8_t emitterPin, transistorStatus type, float VCC, uint8_t baseAnalogPin, uint8_t emitterAnalogPin)
+{
+    setPinMode(basePin, OUTPUT, emitterPin, OUTPUT);
+
+    if (type == TRANSISTOR_INSERTED_NPN) {
+        setPinValues(basePin, HIGH, emitterPin, LOW);
+    } else {
+        setPinValues(basePin, LOW, emitterPin, HIGH);
+    }
+    delay(50);
+    float uBase = readAnalogPin(baseAnalogPin, VCC);
+    float uEmitter = readAnalogPin(emitterAnalogPin, VCC);
+    float openingVoltage = 0.0;
+
+    if (type == TRANSISTOR_INSERTED_NPN) {
+        openingVoltage = uBase - uEmitter;
+    } else {
+        openingVoltage = uEmitter - uBase;
+    }
+    if (openingVoltage < 0.1 || openingVoltage > 1.5) openingVoltage = 0.0;
+    return openingVoltage;
+}
+
+void Transistor::sortElectrodesPos(Transistor::pinPos transistorElectrodesPos[3])
+{
     Transistor::pinPos sorted[3];
     sorted[0] = transistorElectrodesPos[0];
     sorted[1] = transistorElectrodesPos[1];
@@ -150,18 +206,7 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
     transistorElectrodesPos[0] = sorted[0];
     transistorElectrodesPos[1] = sorted[1];
     transistorElectrodesPos[2] = sorted[2];
-    return transistorType;
 }
-
-void Transistor::measurePins(uint8_t dPins[3], uint8_t aPins[3], float pinValues[3], float VCC, float voltages[3])
-{
-    setPinValues(dPins[0], pinValues[0], dPins[1], pinValues[1], dPins[2], pinValues[2]);
-    delay(50);
-    voltages[0] = readAnalogPin(aPins[0], VCC);
-    voltages[1] = readAnalogPin(aPins[1], VCC);
-    voltages[2] = readAnalogPin(aPins[2], VCC);
-}
-
 const char* Transistor::statusToText(transistorStatus status)
 {
   switch (status) {
