@@ -181,7 +181,7 @@ float Transistor::getOpeningU(uint8_t basePin, uint8_t emitterPin, transistorSta
     } else {
         openingVoltage = uEmitter - uBase;
     }
-    if (openingVoltage < 0.1 || openingVoltage > 1.5) openingVoltage = 0.0;
+    // if (openingVoltage < 0.1 || openingVoltage > 1.5) openingVoltage = 0.0;
     return openingVoltage;
 }
 

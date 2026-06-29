@@ -6,7 +6,16 @@ float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, floa
     setPinValues(pins[0], HIGH, pins[1], LOW);
     delay(50);
     float voltage = readAnalogPin(analogPin, VCC);
+    if (voltage >= (VCC - 0.05) || voltage < 0.05) 
+    {
+        Serial.println("Odpor mimo merateľného rozsahu (alebo rozpojený obvod).");
+        return 0.0;
+    }
     float resistorValue = resistor1Value * (voltage / (VCC - voltage));
+    
+    Serial.print("Voltage: " + String(voltage, 3) + " V, ");
+    Serial.println("Resistor value: " + String(resistorValue) + " Ohm");
+    
     return avg.createAverage(resistorValue);
 }
 

@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <U8glib.h>
+#include <U8g2lib.h>
 #include "components/baseComponent.h"
 #include "components/diode.h"
 #include "components/transistor.h"
@@ -7,19 +7,19 @@
 #include "utilities/button.h"
 #include "utilities/display.h"
 
-uint8_t switchButtonPin = 11;
-uint8_t acceptButtonPin = 12;
+uint8_t switchButtonPin = 20;
+uint8_t acceptButtonPin = 21;
 Button switchButton;
 Button acceptButton;
 Diode diode;
 Transistor transistor;
 Resistor resistor;
-uint8_t pins[4] = {2, 3, 4, 5};
-uint8_t analogPins[3] = {A0, A1, A2};
-U8GLIB_SSD1306_128X64 display;
+uint8_t pins[4] = {5, 6, 7, 10};
+uint8_t analogPins[3] = {0, 1, 2};
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C display(U8G2_R0, U8X8_PIN_NONE, 9, 8);
 String text1;
 String text2;
-float VCC = 5.0;
+float VCC = 3.3;
 uint8_t switchMode = 0;
 uint8_t accept = 0;
 unsigned long lastMeasuredTime = 0;
@@ -28,6 +28,10 @@ uint8_t lastAccept = 0;
 
 void setup()
 {
+	Serial.begin(115200);
+	delay(2000);
+	Serial.println("Arduino Tester");
+	display.begin();
     switchButton.init(switchButtonPin);
     acceptButton.init(acceptButtonPin);
 }
