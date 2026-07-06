@@ -130,9 +130,8 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
     {
         transistorType = TRANSISTOR_NOT_WORKING;
     }
-    if (testIndex == 0 && (transistorType == TRANSISTOR_INSERTED_NPN || transistorType == TRANSISTOR_INSERTED_PNP))
+    if (transistorType == TRANSISTOR_INSERTED_NPN || transistorType == TRANSISTOR_INSERTED_PNP)
     {
-        testIndex = 1;
         uint8_t bIndex = 0, eIndex = 0;
         for (uint8_t k = 0; k < 3; k++) {
             if (transistorElectrodesPos[k].name == "B") {
@@ -142,13 +141,22 @@ transistorStatus Transistor::testTransistor(uint8_t dPins[3], uint8_t aPins[3], 
                 for(uint8_t i=0; i<3; i++) if(dPins[i] == transistorElectrodesPos[k].pin) eIndex = i;
             }
         }
-
         openingU = getOpeningU(transistorElectrodesPos[0].pin, transistorElectrodesPos[2].pin, transistorType, VCC, aPins[bIndex], aPins[eIndex]);
+        if (openingU == 0.0)
+        {
+            transistorType = TRANSISTOR_NOT_WORKING;
+            testIndex = 0;
+        }
+    }
+    if (testIndex == 1)
+    {
+        openingU = 10.0;
+        testIndex = 0;
+        sortElectrodesPos(transistorElectrodesPos);
     }
     else
     {
-        testIndex = 0;
-        sortElectrodesPos(transistorElectrodesPos);
+        testIndex = 1;
     }
     return transistorType;
 }
@@ -181,7 +189,7 @@ float Transistor::getOpeningU(uint8_t basePin, uint8_t emitterPin, transistorSta
     } else {
         openingVoltage = uEmitter - uBase;
     }
-    // if (openingVoltage < 0.1 || openingVoltage > 1.5) openingVoltage = 0.0;
+    if (openingVoltage > 1.5) openingVoltage = 0.0;
     return openingVoltage;
 }
 
