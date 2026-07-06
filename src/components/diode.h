@@ -14,11 +14,10 @@ enum diodeStatus
 class Diode : public baseComponent
 {
     public:
-        diodeStatus testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, float &diodeForwardVoltage, float tolerance = 0.15);
+        diodeStatus testDiode(uint8_t pins[2], uint8_t analogPins[2], float VCC, float &diodeForwardVoltage, float tolerance = 0.2);
         static const char* statusToText(diodeStatus status);
     private:
-        void getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh);
-        float getOpenDiodeForwardVoltage(float voltageHighLow, float voltageLowHigh, float VCC);
-        const float smallValue = 0.05;
+        void getVoltages(uint8_t analogPins[2], uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh);
+        // float getOpenDiodeForwardVoltage(float voltageHighLow, float voltageLowHigh, float VCC);
 };
 #endif

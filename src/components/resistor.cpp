@@ -1,21 +1,30 @@
 #include "resistor.h"
 
-float Resistor::testResistor(uint8_t pins[2], uint8_t analogPin, float VCC, float resistor1Value)
+float Resistor::testResistor(uint8_t pins[3], uint8_t analogPin, float VCC)
 {
     setPinMode(pins[0], OUTPUT, pins[1], OUTPUT);
-    setPinValues(pins[0], HIGH, pins[1], LOW);
+    setPinValues(pins[0], LOW, pins[1], HIGH);
     delay(50);
     float voltage = readAnalogPin(analogPin, VCC);
-    if (voltage >= (VCC - 0.05) || voltage < 0.05) 
+    
+    float fixingRvalue1 = 1000.0;
+    float fixingRvalue2 = 1000.0;
+
+    if (voltage <= 0.15) 
     {
-        Serial.println("Odpor mimo merateľného rozsahu (alebo rozpojený obvod).");
+        pinMode(pins[0], INPUT);
+        pinMode(pins[2], OUTPUT);
+        digitalWrite(pins[2], LOW);
+        delay(50);
+        fixingRvalue2 = 34000.0;
+        voltage = readAnalogPin(analogPin, VCC);
+    }
+    if (voltage <= 0.02)
+    {
         return 0.0;
     }
-    float resistorValue = resistor1Value * (voltage / (VCC - voltage));
-    
-    Serial.print("Voltage: " + String(voltage, 3) + " V, ");
-    Serial.println("Resistor value: " + String(resistorValue) + " Ohm");
-    
+    float allResistance = (VCC * fixingRvalue2) / voltage;
+    float resistorValue = allResistance - (fixingRvalue1 + fixingRvalue2);
     return avg.createAverage(resistorValue);
 }
 

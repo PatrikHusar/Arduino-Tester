@@ -1,62 +1,38 @@
 #include "diode.h"
 
-diodeStatus Diode::testDiode(uint8_t pins[2], uint8_t analogPin, float VCC, float &diodeForwardVoltage, float tolerance)
+diodeStatus Diode::testDiode(uint8_t pins[2], uint8_t analogPins[2], float VCC, float &diodeForwardVoltage, float tolerance)
 {
     setPinMode(pins[0], OUTPUT, pins[1], OUTPUT);
     float voltageHighLow, voltageLowHigh;
-    getVoltages(analogPin, pins, VCC, voltageHighLow, voltageLowHigh);
-    diodeForwardVoltage = getOpenDiodeForwardVoltage(voltageHighLow, voltageLowHigh, VCC);
-    if ((voltageHighLow > diodeForwardVoltage - tolerance) &&
-        (voltageHighLow < diodeForwardVoltage + tolerance) &&
-        (voltageLowHigh > 0 - smallValue) &&
-        (voltageLowHigh < 0 + smallValue))
+    getVoltages(analogPins, pins, VCC, voltageHighLow, voltageLowHigh);
+
+    if (voltageHighLow < VCC - tolerance && voltageLowHigh > VCC - tolerance)
     {
+        diodeForwardVoltage = (2.0 * voltageHighLow) - VCC;
         return DIODE_INSERTED_A_C;
     }
-    else if ((voltageHighLow > VCC - smallValue) &&
-            (voltageHighLow < VCC + smallValue) &&
-            (voltageLowHigh > VCC - diodeForwardVoltage - tolerance) &&
-            (voltageLowHigh < VCC - diodeForwardVoltage + tolerance))
+    else if (voltageHighLow > VCC - tolerance && voltageLowHigh < VCC - tolerance)
     {
+        diodeForwardVoltage = (2.0 * voltageLowHigh) - VCC; 
         return DIODE_INSERTED_C_A;
     }
     else
     {
+        diodeForwardVoltage = 0.0;
         return DIODE_NOT_WORKING;
     }
 }
 
-float Diode::getOpenDiodeForwardVoltage(float voltageHighLow, float voltageLowHigh, float VCC)
-{
-    if (voltageHighLow > VCC - smallValue &&
-        voltageHighLow < VCC + smallValue &&
-        voltageLowHigh > 0 - smallValue &&
-        voltageLowHigh < 0 + smallValue)
-    {
-        return 0.00;
-    }
-    else if (voltageHighLow > VCC - smallValue &&
-             voltageHighLow < VCC + smallValue)
-    {
-        return VCC - voltageLowHigh;
-    }
-    else if (voltageHighLow > voltageLowHigh)
-    {
-        return voltageHighLow;
-    }
-    return 0.00;
-}
-
-void Diode::getVoltages(uint8_t analogPin, uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh)
+void Diode::getVoltages(uint8_t analogPins[2], uint8_t pins[2], float VCC, float &voltageHighLow, float &voltageLowHigh)
 {
     setPinValues(pins[0], HIGH, pins[1], LOW);
     delay(50);
-    voltageHighLow = readAnalogPin(analogPin, VCC);
+    voltageHighLow = readAnalogPin(analogPins[0], VCC);
+
     setPinValues(pins[0], LOW, pins[1], HIGH);
     delay(50);
-    voltageLowHigh = readAnalogPin(analogPin, VCC);
+    voltageLowHigh = readAnalogPin(analogPins[1], VCC);
 }
-
 const char* Diode::statusToText(diodeStatus status) {
   switch (status) {
     case DIODE_INSERTED_A_C: return "A-C";
