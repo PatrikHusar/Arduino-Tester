@@ -31,11 +31,9 @@ Device info:
 
   Switch Button switches between 3 modes: Transistor, Diode and Resistor
 
-  Accept Button starts/stops measuring inserted component
-
   pins 1, 2, 3 are for transistor testing
   
-  pins 1, 4 are for diode and resistor testing
+  pins 1, 3 are for diode and resistor testing
 
 some more photos:
 
