@@ -5,6 +5,7 @@ Currently can measure:
 
   ![](/images/diodeScheme.png)
   ![](/images/diodeTable.png)
+  
  - Transistor
 
   ![](/images/transistorScheme.png)
@@ -26,6 +27,7 @@ Adding display:
 Device scheme:
 
   ![](/images/deviceScheme.png)
+  ![](/images/deviceComponentLayout.png)
 
 Device info:
 
